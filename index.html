@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DashBoard</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root {
+    --overlay-bg: rgba(20, 20, 22, 0.38);
+    --card-bg: rgba(255, 255, 255, 0.14);
+    --card-border: rgba(255, 255, 255, 0.22);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.78);
+    --text-muted: rgba(255, 255, 255, 0.55);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #1a1a1a;
+    transition: background-image 1.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--text-primary);
+  }
+
+  #bg-credit {
+    position: fixed;
+    bottom: 8px;
+    left: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+
+  #bg-credit a { color: inherit; }
+
+  .top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 20px;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    backdrop-filter: blur(6px);
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 6vh 20px 0;
+  }
+
+  .middle-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+  }
+
+  #date {
+    font-size: 16px;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    margin-bottom: 4px;
+  }
+
+  #time {
+    font-size: 68px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    margin: 0 0 14px;
+  }
+
+  #weather-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+
+  #weather-pill .temp {
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  .bottom-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px 32px;
+  }
+
+  .overlay-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 640px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .overlay-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 12px 16px;
+    flex: 1;
+    min-width: 240px;
+    text-align: left;
+  }
+
+  .overlay-card h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-secondary);
+  }
+
+  .overlay-card p.placeholder {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Notizie: card grandi, scroll manuale (swipe) ---------- */
+  #news-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+  }
+
+  #news-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .news-card {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 220px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .news-card .zone-tag {
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+
+  .news-card .headline {
+    font-size: 14px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .agenda-item, .news-item {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .agenda-item .time, .news-item .zone {
+    color: var(--text-secondary);
+    min-width: 46px;
+    flex-shrink: 0;
+  }
+
+  .apps-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .app-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .app-shortcut .circle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .app-shortcut:hover .circle {
+    background: rgba(255,255,255,0.24);
+    transform: translateY(-2px);
+  }
+
+  .app-shortcut span.label {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  /* ---------- Overlay app incorporata ---------- */
+  #app-overlay {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    z-index: 999;
+    display: none;
+    flex-direction: column;
+  }
+
+  #app-overlay.open {
+    display: flex;
+  }
+
+  #app-overlay-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #1c1c1e;
+    flex-shrink: 0;
+  }
+
+  #app-overlay-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  #app-overlay-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #app-overlay iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #fff;
+  }
+</style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="icon-btn" title="Impostazioni">&#9881;</div>
+  </div>
+
+  <main>
+    <p id="date">--</p>
+    <p id="time">--:--</p>
+    <div id="weather-pill">
+      <span id="weather-icon">&#9728;</span>
+      <span class="temp" id="weather-temp">--&deg;C</span>
+      <span id="weather-desc">Caricamento meteo...</span>
+    </div>
+  </main>
+
+  <div class="middle-section">
+    <div class="overlay-row" style="flex-direction: column; max-width: 720px;">
+      <div class="overlay-card" id="calendar-card">
+        <h3>Oggi</h3>
+        <p class="placeholder">Il calendario si collega nel prossimo passo (Google Calendar).</p>
+      </div>
+      <div class="overlay-card" id="news-card" style="width: 100%;">
+        <h3>Notizie</h3>
+        <div id="news-scroll">
+          <div class="news-card"><span class="headline">Caricamento notizie...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-panel">
+    <div class="apps-row" id="apps-row">
+      <!-- generato via JS -->
+    </div>
+  </div>
+
+  <div id="bg-credit"></div>
+
+  <div id="app-overlay">
+    <div id="app-overlay-bar">
+      <span id="app-overlay-title">App</span>
+      <button id="app-overlay-close" aria-label="Chiudi">&#10005;</button>
+    </div>
+    <iframe id="app-overlay-frame" src="" title="App incorporata"></iframe>
+  </div>
+
+  <script>
+    // ---------- Data / ora ----------
+    function updateClock() {
+      const now = new Date();
+      const dateFmt = new Intl.DateTimeFormat('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+      const timeFmt = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' });
+      let dateStr = dateFmt.format(now);
+      dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+      document.getElementById('date').textContent = dateStr;
+      document.getElementById('time').textContent = timeFmt.format(now);
+    }
+    updateClock();
+    setInterval(updateClock, 1000 * 10);
+
+    // ---------- Meteo (Open-Meteo, gratis, no chiave) ----------
+    const PARMA = { lat: 44.8015, lon: 10.3279, label: 'Parma' };
+
+    const WMO_ICONS = {
+      0: '\u2600', 1: '\u{1F324}', 2: '\u26C5', 3: '\u2601',
+      45: '\u{1F32B}', 48: '\u{1F32B}',
+      51: '\u{1F327}', 53: '\u{1F327}', 55: '\u{1F327}',
+      61: '\u{1F327}', 63: '\u{1F327}', 65: '\u{1F327}',
+      71: '\u2744', 73: '\u2744', 75: '\u2744',
+      80: '\u{1F326}', 81: '\u{1F326}', 82: '\u26C8',
+      95: '\u26C8', 96: '\u26C8', 99: '\u26C8'
+    };
+    const WMO_DESC = {
+      0: 'Sereno', 1: 'Prevalentemente sereno', 2: 'Parzialmente nuvoloso', 3: 'Nuvoloso',
+      45: 'Nebbia', 48: 'Nebbia con brina',
+      51: 'Pioggerella leggera', 53: 'Pioggerella', 55: 'Pioggerella intensa',
+      61: 'Pioggia leggera', 63: 'Pioggia', 65: 'Pioggia intensa',
+      71: 'Neve leggera', 73: 'Neve', 75: 'Neve intensa',
+      80: 'Rovesci leggeri', 81: 'Rovesci', 82: 'Rovesci intensi',
+      95: 'Temporale', 96: 'Temporale con grandine', 99: 'Temporale forte'
+    };
+
+    async function loadWeather() {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${PARMA.lat}&longitude=${PARMA.lon}&current=temperature_2m,weather_code&timezone=auto`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        const code = data.current.weather_code;
+        document.getElementById('weather-temp').textContent = `${temp}\u00b0C`;
+        document.getElementById('weather-desc').textContent = `${WMO_DESC[code] || 'N/D'}, ${PARMA.label}`;
+        document.getElementById('weather-icon').textContent = WMO_ICONS[code] || '\u2600';
+      } catch (err) {
+        document.getElementById('weather-desc').textContent = 'Meteo non disponibile';
+      }
+    }
+    loadWeather();
+    setInterval(loadWeather, 1000 * 60 * 15);
+
+    // ---------- Foto di sfondo (curata, per fascia oraria / stagione) ----------
+    // Lorem Picsum: nessuna chiave richiesta, pensato per l'hotlink diretto.
+    // Un "seed" fisso per fascia dà un'immagine stabile (non cambia ad ogni refresh).
+    const BACKGROUNDS = {
+      morning: ['hub-morning-1', 'hub-morning-2'],
+      day:     ['hub-day-1', 'hub-day-2'],
+      evening: ['hub-evening-1', 'hub-evening-2'],
+      night:   ['hub-night-1', 'hub-night-2']
+    };
+
+    function pickTimeBucket() {
+      const h = new Date().getHours();
+      if (h >= 5 && h < 10) return 'morning';
+      if (h >= 10 && h < 18) return 'day';
+      if (h >= 18 && h < 21) return 'evening';
+      return 'night';
+    }
+
+    function setBackground() {
+      const bucket = pickTimeBucket();
+      const seeds = BACKGROUNDS[bucket];
+      const seed = seeds[Math.floor(Math.random() * seeds.length)];
+      const url = `https://picsum.photos/seed/${seed}/1920/1080`;
+      document.body.style.backgroundImage =
+        `linear-gradient(var(--overlay-bg), var(--overlay-bg)), url('${url}')`;
+      document.getElementById('bg-credit').textContent = 'Foto: Lorem Picsum';
+    }
+    setBackground();
+
+    // ---------- Le tue app ----------
+    const APPS = [
+      { label: 'Prezzi', icon: '\u{1F6D2}', url: '#' },
+      { label: 'Chazak', icon: '\u{1F4D6}', url: '#' },
+      { label: 'Lavoro', icon: '\u{1F4BC}', url: 'https://djeduardo13-glitch.github.io/Work-Management/' },
+      { label: 'Casa', icon: '\u{1F3E0}', url: '#' }
+    ];
+
+    const appsRow = document.getElementById('apps-row');
+    const overlay = document.getElementById('app-overlay');
+    const overlayFrame = document.getElementById('app-overlay-frame');
+    const overlayTitle = document.getElementById('app-overlay-title');
+    const overlayClose = document.getElementById('app-overlay-close');
+
+    function openApp(app) {
+      overlayTitle.textContent = app.label;
+      overlayFrame.src = app.url;
+      overlay.classList.add('open');
+      history.pushState({ appOverlay: true }, '');
+    }
+
+    function closeApp() {
+      overlay.classList.remove('open');
+      overlayFrame.src = ''; // ferma l'app in background quando chiusa
+    }
+
+    overlayClose.addEventListener('click', () => {
+      closeApp();
+      history.back();
+    });
+
+    window.addEventListener('popstate', closeApp);
+
+    APPS.forEach(app => {
+      const a = document.createElement('a');
+      a.className = 'app-shortcut';
+      a.href = app.url;
+      a.innerHTML = `<span class="circle">${app.icon}</span><span class="label">${app.label}</span>`;
+      a.addEventListener('click', (e) => {
+        if (app.url === '#') return;
+        e.preventDefault();
+        openApp(app);
+      });
+      appsRow.appendChild(a);
+    });
+
+    // ---------- PWA: registrazione service worker ----------
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.warn('Service worker non registrato:', err);
+        });
+      });
+    }
+
+    // ---------- Notizie (RSS per zona, proxy rss2json) ----------
+    // Ordine fisso: Parma, Italia, Mallorca, Spagna, Brasile
+    const NEWS_SOURCES = [
+      { zone: 'Parma',    feed: 'https://news.google.com/rss/search?q=Parma&hl=it&gl=IT&ceid=IT:it' },
+      { zone: 'Italia',   feed: 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml' },
+      { zone: 'Mallorca', feed: 'https://news.google.com/rss/search?q=Mallorca&hl=es&gl=ES&ceid=ES:es' },
+      { zone: 'Spagna',   feed: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
+      { zone: 'Brasile',  feed: 'https://g1.globo.com/rss/g1/' }
+    ];
+    const HEADLINES_PER_ZONE = 2;
+    const RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+    function buildNewsCard(zone, title, link) {
+      const a = document.createElement('a');
+      a.className = 'news-card';
+      a.href = link;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.innerHTML = `<span class="zone-tag">${zone}</span><span class="headline">${title}</span>`;
+      return a;
+    }
+
+    function cleanTitle(title) {
+      // Google News aggiunge spesso " - Nome Fonte" in fondo al titolo: lo rimuoviamo se presente
+      return title.replace(/\s-\s[^-]{2,40}$/, '').trim();
+    }
+
+    async function loadNewsForZone(source) {
+      const res = await fetch(RSS_PROXY + encodeURIComponent(source.feed));
+      const data = await res.json();
+      if (data.status !== 'ok' || !data.items || !data.items.length) {
+        throw new Error('feed vuoto');
+      }
+      return data.items.slice(0, HEADLINES_PER_ZONE).map(item => ({
+        zone: source.zone,
+        title: cleanTitle(item.title),
+        link: item.link
+      }));
+    }
+
+    async function loadAllNews() {
+      const scrollEl = document.getElementById('news-scroll');
+      const results = await Promise.allSettled(NEWS_SOURCES.map(loadNewsForZone));
+
+      const cards = [];
+      results.forEach((res, i) => {
+        const zone = NEWS_SOURCES[i].zone;
+        if (res.status === 'fulfilled') {
+          res.value.forEach(n => cards.push(buildNewsCard(n.zone, n.title, n.link)));
+        } else {
+          console.warn(`Notizie non disponibili per ${zone}:`, res.reason);
+        }
+      });
+
+      if (!cards.length) {
+        scrollEl.innerHTML = '<div class="news-card"><span class="headline">Notizie non disponibili al momento</span></div>';
+        return;
+      }
+
+      scrollEl.innerHTML = '';
+      cards.forEach(card => scrollEl.appendChild(card));
+    }
+
+    loadAllNews();
+    setInterval(loadAllNews, 1000 * 60 * 20); // aggiorna ogni 20 minuti
+  </script>
+
+</body>
+</html>
