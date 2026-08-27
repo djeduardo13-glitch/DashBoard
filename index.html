@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#111111">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=IBM+Plex+Mono:wght@500&family=Poppins:wght@500&display=swap">
 <style>
   :root {
     --overlay-bg: rgba(20, 20, 22, 0.38);
@@ -15,6 +16,8 @@
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.78);
     --text-muted: rgba(255, 255, 255, 0.55);
+    --clock-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --clock-scale: 1;
   }
 
   * { box-sizing: border-box; }
@@ -23,11 +26,12 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   body {
-    min-height: 100vh;
+    height: 100dvh;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -76,30 +80,36 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 6vh 20px 0;
+    padding: 1.5vh 20px 0;
+    flex-shrink: 0;
   }
 
   .middle-section {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 24px 20px;
+    padding: 10px 20px 0;
+    min-height: 0;
+    overflow: hidden;
   }
 
   #date {
-    font-size: 16px;
+    font-family: var(--clock-font);
+    font-size: calc(15px * var(--clock-scale));
     color: var(--text-secondary);
     text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   #time {
-    font-size: 68px;
+    font-family: var(--clock-font);
+    font-size: calc(58px * var(--clock-scale));
     font-weight: 500;
     letter-spacing: -1px;
     text-shadow: 0 2px 10px rgba(0,0,0,0.35);
-    margin: 0 0 14px;
+    margin: 0 0 10px;
+    line-height: 1;
   }
 
   #weather-pill {
@@ -110,26 +120,63 @@
     border: 1px solid var(--card-border);
     backdrop-filter: blur(8px);
     border-radius: 999px;
-    padding: 8px 20px;
-    font-size: 14px;
+    padding: 7px 18px;
+    font-size: 13.5px;
   }
 
   #weather-pill .temp {
     font-weight: 500;
+    font-size: 14px;
+  }
+
+  /* ---------- Previsioni prossimi giorni ---------- */
+  #forecast-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  .forecast-day {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
+    text-align: center;
+    min-width: 52px;
+  }
+
+  .forecast-day .day-label {
+    color: var(--text-secondary);
+    text-transform: capitalize;
+    margin-bottom: 2px;
+  }
+
+  .forecast-day .day-icon {
     font-size: 15px;
   }
+
+  .forecast-day .day-temps {
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  .forecast-day .day-temps .max { font-weight: 600; }
+  .forecast-day .day-temps .min { color: var(--text-muted); }
 
   .bottom-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 0 20px 32px;
+    gap: 10px;
+    padding: 0 20px 14px;
+    flex-shrink: 0;
   }
 
   .overlay-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 640px;
     flex-wrap: wrap;
@@ -141,15 +188,15 @@
     border: 1px solid var(--card-border);
     backdrop-filter: blur(8px);
     border-radius: 14px;
-    padding: 12px 16px;
+    padding: 9px 14px;
     flex: 1;
     min-width: 240px;
     text-align: left;
   }
 
   .overlay-card h3 {
-    margin: 0 0 8px;
-    font-size: 12px;
+    margin: 0 0 6px;
+    font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -181,31 +228,31 @@
   .news-card {
     scroll-snap-align: start;
     flex: 0 0 auto;
-    width: 220px;
+    width: 190px;
     background: rgba(255,255,255,0.10);
     border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 14px 16px;
+    border-radius: 12px;
+    padding: 10px 12px;
     text-decoration: none;
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
   }
 
   .news-card .zone-tag {
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: 0.4px;
   }
 
   .news-card .headline {
-    font-size: 14px;
-    line-height: 1.35;
+    font-size: 13px;
+    line-height: 1.3;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -240,8 +287,8 @@
   }
 
   .app-shortcut .circle {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
@@ -249,7 +296,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 17px;
     transition: transform 0.15s ease, background 0.15s ease;
   }
 
@@ -312,6 +359,199 @@
     border: none;
     background: #fff;
   }
+
+  /* ---------- Pannello impostazioni ---------- */
+  #settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: #141416;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+  }
+
+  #settings-overlay.open {
+    display: flex;
+  }
+
+  #settings-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #1c1c1e;
+    flex-shrink: 0;
+  }
+
+  #settings-bar h2 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  #settings-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #settings-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 18px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    color: #fff;
+  }
+
+  .settings-section h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.55);
+    margin: 0 0 12px;
+  }
+
+  .settings-hint {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin: 4px 0 0;
+  }
+
+  .settings-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 8px;
+  }
+
+  .settings-item input[type="text"],
+  .settings-item input[type="url"],
+  .settings-item input[type="number"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .settings-item .field-icon { width: 44px; flex: none; text-align: center; }
+  .settings-item .field-label { flex: 1.2; }
+  .settings-item .field-url { flex: 2; }
+
+  input[type="text"], input[type="url"], input[type="number"], select {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 13.5px;
+    box-sizing: border-box;
+  }
+
+  .btn-icon {
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-add {
+    margin-top: 4px;
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,0.3);
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    background: #fff;
+    color: #111;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 13.5px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .settings-row-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .settings-row-inline label {
+    font-size: 13.5px;
+  }
+
+  .settings-city-result {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 6px;
+  }
+
+  .settings-city-result:hover {
+    background: rgba(255,255,255,0.14);
+  }
+
+  #settings-current-city {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 6px 0 10px;
+  }
+
+  #settings-info {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+
+  input[type="range"] {
+    width: 100%;
+  }
 </style>
 </head>
 <body>
@@ -328,6 +568,7 @@
       <span class="temp" id="weather-temp">--&deg;C</span>
       <span id="weather-desc">Caricamento meteo...</span>
     </div>
+    <div id="forecast-row"></div>
   </main>
 
   <div class="middle-section">
@@ -361,7 +602,132 @@
     <iframe id="app-overlay-frame" src="" title="App incorporata"></iframe>
   </div>
 
+  <div id="settings-overlay">
+    <div id="settings-bar">
+      <h2>Impostazioni</h2>
+      <button id="settings-close" aria-label="Chiudi">&#10005;</button>
+    </div>
+    <div id="settings-body">
+
+      <div class="settings-section">
+        <h3>Le tue app</h3>
+        <div id="settings-apps-list"></div>
+        <button class="btn-add" id="settings-add-app">+ Aggiungi app</button>
+      </div>
+
+      <div class="settings-section">
+        <h3>Aspetto data e ora</h3>
+        <label for="settings-clock-font" style="font-size:13px;color:rgba(255,255,255,0.7);">Font</label><br>
+        <select id="settings-clock-font" style="width:100%;margin:6px 0 12px;">
+          <option value="system">Predefinito</option>
+          <option value="serif">Elegante (serif)</option>
+          <option value="mono">Monospazio</option>
+          <option value="rounded">Arrotondato</option>
+        </select>
+        <label for="settings-clock-scale" style="font-size:13px;color:rgba(255,255,255,0.7);">Dimensione</label>
+        <input type="range" id="settings-clock-scale" min="0.7" max="1.5" step="0.05">
+      </div>
+
+      <div class="settings-section">
+        <h3>Notizie</h3>
+        <div class="settings-row-inline">
+          <label for="settings-headlines-count">Notizie per zona</label>
+          <input type="number" id="settings-headlines-count" min="1" max="5" style="width:60px;">
+        </div>
+        <div id="settings-zones-list"></div>
+        <button class="btn-add" id="settings-add-zone">+ Aggiungi zona</button>
+        <p class="settings-hint">L'ordine delle zone qui sopra è l'ordine con cui compaiono le notizie nell'hub.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Meteo</h3>
+        <p id="settings-current-city">Città attuale: <strong id="settings-current-city-name">--</strong></p>
+        <div class="settings-row-inline" style="gap:8px;">
+          <input type="text" id="settings-city-search" placeholder="Cerca una città...">
+          <button class="btn-icon" id="settings-city-search-btn" style="width:auto;padding:0 12px;">Cerca</button>
+        </div>
+        <div id="settings-city-results" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="settings-section">
+        <h3>Sfondo</h3>
+        <div class="settings-row-inline">
+          <label for="settings-bg-auto">Cambia foto con ora/stagione</label>
+          <input type="checkbox" id="settings-bg-auto">
+        </div>
+        <label for="settings-overlay-opacity" style="font-size:13px;color:rgba(255,255,255,0.7);">Intensità overlay scuro sulla foto</label>
+        <input type="range" id="settings-overlay-opacity" min="0.1" max="0.7" step="0.02">
+      </div>
+
+      <div class="settings-section">
+        <h3>Aggiornamento manuale</h3>
+        <button class="btn-secondary" id="settings-refresh-weather">Aggiorna meteo ora</button>
+        <button class="btn-secondary" id="settings-refresh-news">Aggiorna notizie ora</button>
+      </div>
+
+      <div class="settings-section">
+        <h3>Info app</h3>
+        <div id="settings-info"></div>
+      </div>
+
+      <button class="btn-primary" id="settings-save">Salva</button>
+    </div>
+  </div>
+
   <script>
+    const SETTINGS_KEY = 'dashboard_settings_v1';
+    const APP_VERSION = '1.1.0';
+
+    const DEFAULT_SETTINGS = {
+      apps: [
+        { label: 'Prezzi', icon: '\u{1F6D2}', url: '#' },
+        { label: 'Chazak', icon: '\u{1F4D6}', url: '#' },
+        { label: 'Lavoro', icon: '\u{1F4BC}', url: 'https://djeduardo13-glitch.github.io/Work-Management/' },
+        { label: 'Casa', icon: '\u{1F3E0}', url: '#' }
+      ],
+      newsZones: [
+        { zone: 'Parma',    feed: 'https://news.google.com/rss/search?q=Parma&hl=it&gl=IT&ceid=IT:it' },
+        { zone: 'Italia',   feed: 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml' },
+        { zone: 'Mallorca', feed: 'https://news.google.com/rss/search?q=Mallorca&hl=es&gl=ES&ceid=ES:es' },
+        { zone: 'Spagna',   feed: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
+        { zone: 'Brasile',  feed: 'https://g1.globo.com/rss/g1/' }
+      ],
+      headlinesPerZone: 2,
+      city: { lat: 44.8015, lon: 10.3279, label: 'Parma' },
+      bgAuto: true,
+      overlayOpacity: 0.38,
+      clockFont: 'system',
+      clockScale: 1,
+      lastUpdated: null
+    };
+
+    const CLOCK_FONTS = {
+      system: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      serif: '"Playfair Display", Georgia, serif',
+      mono: '"IBM Plex Mono", "Courier New", monospace',
+      rounded: '"Poppins", "Segoe UI", sans-serif'
+    };
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return structuredClone(DEFAULT_SETTINGS);
+        const parsed = JSON.parse(raw);
+        // merge con i default, cosi eventuali nuovi campi futuri non rompono un salvataggio vecchio
+        return Object.assign(structuredClone(DEFAULT_SETTINGS), parsed);
+      } catch (err) {
+        console.warn('Impostazioni non leggibili, uso i valori di base:', err);
+        return structuredClone(DEFAULT_SETTINGS);
+      }
+    }
+
+    function saveSettings(settings) {
+      settings.lastUpdated = new Date().toISOString();
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    }
+
+    let settings = loadSettings();
+
     // ---------- Data / ora ----------
     function updateClock() {
       const now = new Date();
@@ -376,8 +742,6 @@
     setInterval(updateClock, 1000 * 10);
 
     // ---------- Meteo (Open-Meteo, gratis, no chiave) ----------
-    const PARMA = { lat: 44.8015, lon: 10.3279, label: 'Parma' };
-
     const WMO_ICONS = {
       0: '\u2600', 1: '\u{1F324}', 2: '\u26C5', 3: '\u2601',
       45: '\u{1F32B}', 48: '\u{1F32B}',
@@ -399,32 +763,58 @@
 
     async function loadWeather() {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${PARMA.lat}&longitude=${PARMA.lon}&current=temperature_2m,weather_code&timezone=auto`;
+        const city = settings.city;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=auto`;
         const res = await fetch(url);
         const data = await res.json();
+
         const temp = Math.round(data.current.temperature_2m);
         const code = data.current.weather_code;
         document.getElementById('weather-temp').textContent = `${temp}\u00b0C`;
-        document.getElementById('weather-desc').textContent = `${WMO_DESC[code] || 'N/D'}, ${PARMA.label}`;
+        document.getElementById('weather-desc').textContent = `${WMO_DESC[code] || 'N/D'}, ${city.label}`;
         document.getElementById('weather-icon').textContent = WMO_ICONS[code] || '\u2600';
+
+        renderForecast(data.daily);
       } catch (err) {
         document.getElementById('weather-desc').textContent = 'Meteo non disponibile';
+      }
+    }
+
+    function renderForecast(daily) {
+      const row = document.getElementById('forecast-row');
+      if (!daily || !daily.time) { row.innerHTML = ''; return; }
+      const dayFmt = new Intl.DateTimeFormat('it-IT', { weekday: 'short' });
+      row.innerHTML = '';
+      // Salta il giorno 0 (oggi, gia mostrato nella pillola) e mostra i 3 successivi
+      for (let i = 1; i < daily.time.length; i++) {
+        const date = new Date(daily.time[i] + 'T12:00:00');
+        const code = daily.weather_code[i];
+        const max = Math.round(daily.temperature_2m_max[i]);
+        const min = Math.round(daily.temperature_2m_min[i]);
+        const div = document.createElement('div');
+        div.className = 'forecast-day';
+        div.innerHTML = `
+          <div class="day-label">${dayFmt.format(date)}</div>
+          <div class="day-icon">${WMO_ICONS[code] || '\u2600'}</div>
+          <div class="day-temps"><span class="max">${max}\u00b0</span> <span class="min">${min}\u00b0</span></div>
+        `;
+        row.appendChild(div);
       }
     }
     loadWeather();
     setInterval(loadWeather, 1000 * 60 * 15);
 
     // ---------- Foto di sfondo (curata, per fascia oraria / stagione) ----------
-    // Lorem Picsum: nessuna chiave richiesta, pensato per l'hotlink diretto.
-    // Un "seed" fisso per fascia dà un'immagine stabile (non cambia ad ogni refresh).
     const BACKGROUNDS = {
       morning: ['hub-morning-1', 'hub-morning-2'],
       day:     ['hub-day-1', 'hub-day-2'],
       evening: ['hub-evening-1', 'hub-evening-2'],
-      night:   ['hub-night-1', 'hub-night-2']
+      night:   ['hub-night-1', 'hub-night-2'],
+      fixed:   ['hub-fixed-1']
     };
 
     function pickTimeBucket() {
+      if (!settings.bgAuto) return 'fixed';
       const h = new Date().getHours();
       if (h >= 5 && h < 10) return 'morning';
       if (h >= 10 && h < 18) return 'day';
@@ -432,7 +822,18 @@
       return 'night';
     }
 
+    function applyOverlayOpacity() {
+      document.documentElement.style.setProperty('--overlay-bg', `rgba(20, 20, 22, ${settings.overlayOpacity})`);
+    }
+
+    function applyClockStyle() {
+      document.documentElement.style.setProperty('--clock-font', CLOCK_FONTS[settings.clockFont] || CLOCK_FONTS.system);
+      document.documentElement.style.setProperty('--clock-scale', settings.clockScale);
+    }
+    applyClockStyle();
+
     function setBackground() {
+      applyOverlayOpacity();
       const bucket = pickTimeBucket();
       const seeds = BACKGROUNDS[bucket];
       const seed = seeds[Math.floor(Math.random() * seeds.length)];
@@ -444,13 +845,6 @@
     setBackground();
 
     // ---------- Le tue app ----------
-    const APPS = [
-      { label: 'Prezzi', icon: '\u{1F6D2}', url: '#' },
-      { label: 'Chazak', icon: '\u{1F4D6}', url: '#' },
-      { label: 'Lavoro', icon: '\u{1F4BC}', url: 'https://djeduardo13-glitch.github.io/Work-Management/' },
-      { label: 'Casa', icon: '\u{1F3E0}', url: '#' }
-    ];
-
     const appsRow = document.getElementById('apps-row');
     const overlay = document.getElementById('app-overlay');
     const overlayFrame = document.getElementById('app-overlay-frame');
@@ -466,7 +860,7 @@
 
     function closeApp() {
       overlay.classList.remove('open');
-      overlayFrame.src = ''; // ferma l'app in background quando chiusa
+      overlayFrame.src = '';
     }
 
     overlayClose.addEventListener('click', () => {
@@ -476,18 +870,22 @@
 
     window.addEventListener('popstate', closeApp);
 
-    APPS.forEach(app => {
-      const a = document.createElement('a');
-      a.className = 'app-shortcut';
-      a.href = app.url;
-      a.innerHTML = `<span class="circle">${app.icon}</span><span class="label">${app.label}</span>`;
-      a.addEventListener('click', (e) => {
-        if (app.url === '#') return;
-        e.preventDefault();
-        openApp(app);
+    function renderApps() {
+      appsRow.innerHTML = '';
+      settings.apps.forEach(app => {
+        const a = document.createElement('a');
+        a.className = 'app-shortcut';
+        a.href = app.url;
+        a.innerHTML = `<span class="circle">${app.icon}</span><span class="label">${app.label}</span>`;
+        a.addEventListener('click', (e) => {
+          if (!app.url || app.url === '#') { e.preventDefault(); return; }
+          e.preventDefault();
+          openApp(app);
+        });
+        appsRow.appendChild(a);
       });
-      appsRow.appendChild(a);
-    });
+    }
+    renderApps();
 
     // ---------- PWA: registrazione service worker ----------
     if ('serviceWorker' in navigator) {
@@ -499,15 +897,6 @@
     }
 
     // ---------- Notizie (RSS per zona, proxy rss2json) ----------
-    // Ordine fisso: Parma, Italia, Mallorca, Spagna, Brasile
-    const NEWS_SOURCES = [
-      { zone: 'Parma',    feed: 'https://news.google.com/rss/search?q=Parma&hl=it&gl=IT&ceid=IT:it' },
-      { zone: 'Italia',   feed: 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml' },
-      { zone: 'Mallorca', feed: 'https://news.google.com/rss/search?q=Mallorca&hl=es&gl=ES&ceid=ES:es' },
-      { zone: 'Spagna',   feed: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
-      { zone: 'Brasile',  feed: 'https://g1.globo.com/rss/g1/' }
-    ];
-    const HEADLINES_PER_ZONE = 2;
     const RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
     function buildNewsCard(zone, title, link) {
@@ -521,7 +910,6 @@
     }
 
     function cleanTitle(title) {
-      // Google News aggiunge spesso " - Nome Fonte" in fondo al titolo: lo rimuoviamo se presente
       return title.replace(/\s-\s[^-]{2,40}$/, '').trim();
     }
 
@@ -531,7 +919,7 @@
       if (data.status !== 'ok' || !data.items || !data.items.length) {
         throw new Error('feed vuoto');
       }
-      return data.items.slice(0, HEADLINES_PER_ZONE).map(item => ({
+      return data.items.slice(0, settings.headlinesPerZone).map(item => ({
         zone: source.zone,
         title: cleanTitle(item.title),
         link: item.link
@@ -540,11 +928,11 @@
 
     async function loadAllNews() {
       const scrollEl = document.getElementById('news-scroll');
-      const results = await Promise.allSettled(NEWS_SOURCES.map(loadNewsForZone));
+      const results = await Promise.allSettled(settings.newsZones.map(loadNewsForZone));
 
       const cards = [];
       results.forEach((res, i) => {
-        const zone = NEWS_SOURCES[i].zone;
+        const zone = settings.newsZones[i].zone;
         if (res.status === 'fulfilled') {
           res.value.forEach(n => cards.push(buildNewsCard(n.zone, n.title, n.link)));
         } else {
@@ -562,7 +950,188 @@
     }
 
     loadAllNews();
-    setInterval(loadAllNews, 1000 * 60 * 20); // aggiorna ogni 20 minuti
+    setInterval(loadAllNews, 1000 * 60 * 20);
+
+    // ==================================================================
+    // PANNELLO IMPOSTAZIONI
+    // ==================================================================
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const settingsCloseBtn = document.getElementById('settings-close');
+    const gearBtn = document.querySelector('.icon-btn');
+
+    let draft = null; // copia di lavoro delle impostazioni, scartata se non si salva
+
+    function openSettings() {
+      draft = structuredClone(settings);
+      renderSettingsPanel();
+      settingsOverlay.classList.add('open');
+    }
+
+    function closeSettingsPanel() {
+      settingsOverlay.classList.remove('open');
+    }
+
+    gearBtn.addEventListener('click', openSettings);
+    settingsCloseBtn.addEventListener('click', closeSettingsPanel);
+
+    function renderSettingsPanel() {
+      renderAppsSettings();
+      renderZonesSettings();
+      document.getElementById('settings-headlines-count').value = draft.headlinesPerZone;
+      document.getElementById('settings-current-city-name').textContent = draft.city.label;
+      document.getElementById('settings-bg-auto').checked = draft.bgAuto;
+      document.getElementById('settings-overlay-opacity').value = draft.overlayOpacity;
+      document.getElementById('settings-clock-font').value = draft.clockFont;
+      document.getElementById('settings-clock-scale').value = draft.clockScale;
+      renderInfoSettings();
+    }
+
+    // ---- App ----
+    function renderAppsSettings() {
+      const list = document.getElementById('settings-apps-list');
+      list.innerHTML = '';
+      draft.apps.forEach((app, i) => {
+        const row = document.createElement('div');
+        row.className = 'settings-item';
+        row.innerHTML = `
+          <input type="text" class="field-icon" value="${app.icon}" maxlength="4" title="Emoji">
+          <input type="text" class="field-label" value="${app.label}" placeholder="Nome">
+          <input type="url" class="field-url" value="${app.url}" placeholder="https://...">
+          <button class="btn-icon" data-action="up" title="Sposta su">&#8593;</button>
+          <button class="btn-icon" data-action="down" title="Sposta gi\u00f9">&#8595;</button>
+          <button class="btn-icon" data-action="del" title="Rimuovi">&#10005;</button>
+        `;
+        const [iconInp, labelInp, urlInp, upBtn, downBtn, delBtn] = row.querySelectorAll('input, button');
+        iconInp.addEventListener('input', () => app.icon = iconInp.value);
+        labelInp.addEventListener('input', () => app.label = labelInp.value);
+        urlInp.addEventListener('input', () => app.url = urlInp.value);
+        upBtn.addEventListener('click', () => { if (i > 0) { [draft.apps[i-1], draft.apps[i]] = [draft.apps[i], draft.apps[i-1]]; renderAppsSettings(); } });
+        downBtn.addEventListener('click', () => { if (i < draft.apps.length - 1) { [draft.apps[i+1], draft.apps[i]] = [draft.apps[i], draft.apps[i+1]]; renderAppsSettings(); } });
+        delBtn.addEventListener('click', () => { draft.apps.splice(i, 1); renderAppsSettings(); });
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('settings-add-app').addEventListener('click', () => {
+      draft.apps.push({ label: 'Nuova app', icon: '\u2B50', url: '' });
+      renderAppsSettings();
+    });
+
+    // ---- Notizie / zone ----
+    function renderZonesSettings() {
+      const list = document.getElementById('settings-zones-list');
+      list.innerHTML = '';
+      draft.newsZones.forEach((z, i) => {
+        const row = document.createElement('div');
+        row.className = 'settings-item';
+        row.innerHTML = `
+          <input type="text" class="field-label" value="${z.zone}" placeholder="Nome zona" style="flex:0.8;">
+          <input type="url" class="field-url" value="${z.feed}" placeholder="URL feed RSS">
+          <button class="btn-icon" data-action="up" title="Sposta su">&#8593;</button>
+          <button class="btn-icon" data-action="down" title="Sposta gi\u00f9">&#8595;</button>
+          <button class="btn-icon" data-action="del" title="Rimuovi">&#10005;</button>
+        `;
+        const [zoneInp, feedInp, upBtn, downBtn, delBtn] = row.querySelectorAll('input, button');
+        zoneInp.addEventListener('input', () => z.zone = zoneInp.value);
+        feedInp.addEventListener('input', () => z.feed = feedInp.value);
+        upBtn.addEventListener('click', () => { if (i > 0) { [draft.newsZones[i-1], draft.newsZones[i]] = [draft.newsZones[i], draft.newsZones[i-1]]; renderZonesSettings(); } });
+        downBtn.addEventListener('click', () => { if (i < draft.newsZones.length - 1) { [draft.newsZones[i+1], draft.newsZones[i]] = [draft.newsZones[i], draft.newsZones[i+1]]; renderZonesSettings(); } });
+        delBtn.addEventListener('click', () => { draft.newsZones.splice(i, 1); renderZonesSettings(); });
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('settings-add-zone').addEventListener('click', () => {
+      draft.newsZones.push({ zone: 'Nuova zona', feed: '' });
+      renderZonesSettings();
+    });
+
+    document.getElementById('settings-headlines-count').addEventListener('input', (e) => {
+      draft.headlinesPerZone = Math.max(1, Math.min(5, parseInt(e.target.value, 10) || 1));
+    });
+
+    // ---- Meteo: ricerca città (Open-Meteo Geocoding, gratis no chiave) ----
+    async function searchCity(query) {
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=6&language=it`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.results || [];
+    }
+
+    document.getElementById('settings-city-search-btn').addEventListener('click', async () => {
+      const q = document.getElementById('settings-city-search').value.trim();
+      const resultsEl = document.getElementById('settings-city-results');
+      if (!q) return;
+      resultsEl.innerHTML = '<p class="settings-hint">Ricerca in corso...</p>';
+      try {
+        const results = await searchCity(q);
+        resultsEl.innerHTML = '';
+        if (!results.length) {
+          resultsEl.innerHTML = '<p class="settings-hint">Nessuna città trovata.</p>';
+          return;
+        }
+        results.forEach(r => {
+          const div = document.createElement('div');
+          div.className = 'settings-city-result';
+          const region = [r.admin1, r.country].filter(Boolean).join(', ');
+          div.textContent = `${r.name}${region ? ' — ' + region : ''}`;
+          div.addEventListener('click', () => {
+            draft.city = { lat: r.latitude, lon: r.longitude, label: r.name };
+            document.getElementById('settings-current-city-name').textContent = r.name;
+            resultsEl.innerHTML = '';
+            document.getElementById('settings-city-search').value = '';
+          });
+          resultsEl.appendChild(div);
+        });
+      } catch (err) {
+        resultsEl.innerHTML = '<p class="settings-hint">Ricerca non riuscita, riprova.</p>';
+      }
+    });
+
+    // ---- Sfondo ----
+    document.getElementById('settings-bg-auto').addEventListener('change', (e) => {
+      draft.bgAuto = e.target.checked;
+    });
+    document.getElementById('settings-overlay-opacity').addEventListener('input', (e) => {
+      draft.overlayOpacity = parseFloat(e.target.value);
+    });
+
+    // ---- Aspetto orologio ----
+    document.getElementById('settings-clock-font').addEventListener('change', (e) => {
+      draft.clockFont = e.target.value;
+    });
+    document.getElementById('settings-clock-scale').addEventListener('input', (e) => {
+      draft.clockScale = parseFloat(e.target.value);
+    });
+
+    // ---- Aggiornamento manuale ----
+    document.getElementById('settings-refresh-weather').addEventListener('click', () => {
+      loadWeather();
+    });
+    document.getElementById('settings-refresh-news').addEventListener('click', () => {
+      loadAllNews();
+    });
+
+    // ---- Info app ----
+    function renderInfoSettings() {
+      const info = document.getElementById('settings-info');
+      const last = settings.lastUpdated
+        ? new Intl.DateTimeFormat('it-IT', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(settings.lastUpdated))
+        : 'mai (impostazioni di base)';
+      info.innerHTML = `Versione: ${APP_VERSION}<br>Ultimo salvataggio impostazioni: ${last}`;
+    }
+
+    // ---- Salva ----
+    document.getElementById('settings-save').addEventListener('click', () => {
+      settings = draft;
+      saveSettings(settings);
+      renderApps();
+      setBackground();
+      applyClockStyle();
+      loadWeather();
+      loadAllNews();
+      closeSettingsPanel();
+    });
   </script>
 
 </body>
